@@ -1,0 +1,6 @@
+{
+    "env": {
+        "PG_CREDENTIALS": "postgres:q",
+        "JWT_SECRET": "secret"
+    }
+}
