@@ -1,6 +1,7 @@
 import axios from 'axios'
 import store from '~/store'
 import authService, * as authHelpers from './AuthService'
+import router  from '~/router'
 
 let flag = false
 
@@ -36,20 +37,20 @@ export default () => {
   })
 
 
-  // api.interceptors.response.use(
-  //   res => res ,
-  //   error => {
-  //     const { status, data } = error.response
+  api.interceptors.response.use(
+    res => res ,
+    error => {
+      const { status, data } = error.response
       
-  //     store.dispatch('base/showMessage', {message: data.message, error})
+      store.dispatch('base/showMessage', {message: data.message, error})
   
-  //     if (status === 401 || status === 419 ) {
-  //       // document.location.href = '/login'
-  //     }
+      if (status === 401 || status === 419 ) {
+        router.push('/login')
+      }
   
-  //     return Promise.reject(data)
-  //   }
-  // )
+      return Promise.reject(data)
+    }
+  )
 
   return api
 }

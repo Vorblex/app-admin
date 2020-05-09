@@ -39,21 +39,17 @@ export const routes = {
   redirect: [
     {
       path: '/',
-      redirect: 'Login'
+      redirect: 'login'
     },
     {
       path: '/login',
       name: 'Login',
       component: () => import('@/Login')
     },
-    // {
-    //   path: '/',
-    //   redirect: 'projects'
-    // },
-    // {
-    //   path: '*',
-    //   redirect: '/'
-    // }
+    {
+      path: '*',
+      redirect: '/projects'
+    }
   ],
 
   nested: [ 

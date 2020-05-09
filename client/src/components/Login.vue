@@ -1,21 +1,18 @@
 <template lang="pug">
-  .container
-    .row.justify-content-center
-      .col-8
-        h1
-          | Sign in
-        span {{answer}}
-        form(@submit.prevent="signIn")
-          .form-group
-            input.form-control( type="text" placeholder="Email" v-model.trim="user.email" )
-          .form-group
-            input.form-control( type="password" placeholder="Password" v-model.trim="user.password" )
-          .form-group
-            button.btn.btn-block.btn-primary(type="submit")
-              | Sign in
-          section
-            button.btn.btn-success.btn-block( type="button" @click="goBack" )
-              | go to posts page
+  v-layout(align-center justify-center)
+    v-flex(xs12 sm8 md4)
+      v-card.elevation-12
+        v-form(@submit.prevent="signIn")
+          v-toolbar(dark flat)
+            v-toolbar-title Login form
+          v-card-text
+              v-text-field(v-model.trim="user.email" label='Email' prepend-icon='person' type='text')
+              v-text-field(v-model.trim="user.password" label='Password' prepend-icon='lock' type='password')
+          v-card-actions
+            v-spacer
+            v-btn(type='submit' color='primary') Login
+      //- v-alert(type='error') {{answer}}
+
 </template>
 
 <script>
