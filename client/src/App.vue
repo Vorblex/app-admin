@@ -10,16 +10,17 @@
               v-icon mdi-account-arrow-right
           span Logout
     v-content
-      v-container(fluid fill-height)
+      //- v-container(v-if='hasPagePermission || !isNotLoginPage' fluid fill-height )
+      v-container(fluid fill-height )
         router-view
     app-confirmation-dialog
     app-snackbar
 </template>
 
 <script>
-import { routes } from './router'
+import router, { userRoutes as routes } from './router'
 import { mapGetters, mapActions } from 'vuex'
-import api from './services/api'
+import UsersService from '~/services/UsersService'
 
 export default {
   components: {
@@ -34,25 +35,56 @@ export default {
   methods: {
     ...mapActions('base', {
       changeLoading: 'changeLoading',
+      setPermissions: 'setPermissions',
       setUser: 'setUser'
     })
   },
   computed: {
     ...mapGetters('base', {
       user: 'user',
-      loading: 'loading'
+      loading: 'loading',
+      isPermissions: 'isPermissions',
+      hasPermission: 'hasPermission'
     }),
     routes() {
-      return routes[this.user.role] || []
+      return routes.filter(route => this.hasPermission(route.meta.permission))
+    },
+    hasPagePermission() {
+      return this.hasPermission(this.$route.meta.pagePermission)
     },
     isNotLoginPage() {
       return this.$route.name !== 'Login'
     }
   },
   watch: {
-    user(v) {
-      console.log('VV',v);
-    }
+    async user(v) {
+      console.log('Set User',v)
+      const { data } = await UsersService.getPermissions()
+      this.setPermissions(data)
+    },
+    isPermissions(v) {
+      if(!v) return
+      router.beforeEach((to, from, next) => {
+        if (to.matched.some(record => record.meta.permission)) {
+          if (!this.hasPermission(to.meta.permission) && to.name !== 'Projects') {
+            next({ path: '/projects' })
+          } else {
+            next()
+          }
+        } else {
+          next()
+        }
+      })
+      this.changeLoading(false)
+    },
+    // loading(v) {
+    //   if(v) return
+    //   const overLayer = document.getElementById('overLayer')
+    //   overLayer.addEventListener('transitionend', () => overLayer.style.display = 'none')
+    //     setTimeout(() => {
+    //         overLayer.style.cssText = `opacity: 0;transition: .4s;`
+    //     }, 1000)
+    // }
   },
   created() {
     console.log(this.$route);

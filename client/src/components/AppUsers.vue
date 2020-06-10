@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-layout(v-if='admin' column)
+  v-layout(column)
     h1.title Users Page
 
     v-card

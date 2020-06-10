@@ -14,7 +14,6 @@
           v-col(cols='12' sm='4')
             v-select(@change='setFilter' :value='filterValue' :items='filterSelectItems' label='Filter')
           //- v-switch.mr-4(v-model='options.unread' :true-value='1' :false-value='0' color='success' label='Unread')
-          //- v-switch.mr-4(v-model='options.approved' :true-value='1' :false-value='0' color='success' label='Approved')
 
 
     v-data-table( :headers='headers'
@@ -41,7 +40,7 @@
           td(class='text-center') {{item.createdAt}}
           td(class='text-center') {{item.updatedAt}}
           td
-            v-switch(v-if='admin' v-model='item.approved' @change='approveDocument(item.id, $event)' color='success' class='my-switch')
+            v-switch(v-if='hasPermissionApproveDocuments' v-model='item.approved' @change='approveDocument(item.id, $event)' color='success' class='my-switch')
             div(v-else :class='{ "approved-indicator": true, "approved": item.approved }')
           td(class='text-right')
             v-tooltip(top)
@@ -62,8 +61,8 @@
             v-col(cols='12' sm='6')
               template(v-if='expanded[0]')
                 app-upload-files(@upload='getData()' :id='expanded[0].id')
-                v-textarea(v-model='comment' :readonly='manager' label='Comments' prepend-icon='comment' filled class='mt-2')
-                v-btn.mr-4(v-if='!manager' color='blue darken-1' @click='addComment') Add comment
+                v-textarea(v-model='comment' :readonly='!hasPermissionCreateComments' label='Comments' prepend-icon='comment' filled class='mt-2')
+                v-btn.mr-4(v-if='hasPermissionCreateComments' color='blue darken-1' @click='addComment') Add comment
                 v-btn(v-if='expanded[0].comments.length' @click='commentsDialog = true' color='blue darken-1') Show comments
 
             v-col(cols='12' sm='6')
@@ -314,10 +313,14 @@ export default {
   computed: {
     ...mapGetters('base', {
       confirmationAgree: 'confirmationAgree',
-      admin: 'admin',
-      teamlead: 'teamlead',
-      manager: 'manager'
+      hasPermission: 'hasPermission'
     }),
+    hasPermissionApproveDocuments() {
+      return this.hasPermission('approve_documents')
+    },
+    hasPermissionCreateComments() {
+      return this.hasPermission('create_comments')
+    },
     id () {
       return this.$route.params.id
     }
@@ -335,6 +338,7 @@ export default {
       deep: true,
     }
   },
+
   async mounted () {
     await this.getData()
     this.flag = true
@@ -366,7 +370,6 @@ export default {
   }
 
   tr.viewed {
-    // background: rgb(68, 68, 68);
     background: #121212;
   }
 

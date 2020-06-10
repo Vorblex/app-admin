@@ -1,36 +1,5 @@
 import Vue from 'vue'
-import Store from '~/store'
 import Router from 'vue-router'
-
-const { user } = Store.state.base
-
-const admin = [
-  {
-    path: '/users',
-    name: 'Users',
-    icon: 'mdi-account-circle',
-    component: () => import('@/AppUsers'),
-    meta: { adminOnly: true }
-  }
-]
-
-const teamlead = [
-  {
-    path: '/projects',
-    name: 'Projects',
-    icon: 'mdi-webpack',
-    component: () => import('@/AppProjects')
-  }
-]
-
-const manager = [
-  {
-    path: '/clients',
-    name: 'Clients',
-    icon: 'mdi-account-multiple',
-    component: () => import('@/AppClients')
-  }
-]
 
 Vue.use(Router)
 
@@ -39,16 +8,31 @@ export const routes = {
   redirect: [
     {
       path: '/',
-      redirect: 'login'
-    },
-    {
+      redirect: '/projects'
+    }, {
+      path: '*',
+      redirect: '/'
+    }, {
       path: '/login',
       name: 'Login',
-      component: () => import('@/Login')
-    },
+      component: () => import('@/Login'),
+      meta: {}
+    }
+  ],
+
+  user: [
     {
-      path: '*',
-      redirect: '/projects'
+      path: '/users',
+      name: 'Users',
+      icon: 'mdi-account-circle',
+      component: () => import('@/AppUsers'),
+      meta: { permission: 'get_users', pagePermission: 'get_users' }
+    }, {
+      path: '/projects',
+      name: 'Projects',
+      icon: 'mdi-webpack',
+      component: () => import('@/AppProjects'),
+      meta: { permission: 'get_projects', pagePermission: 'get_projects' }
     }
   ],
 
@@ -58,39 +42,120 @@ export const routes = {
       name: 'Documents',
       icon: 'mdi-webpack',
       props: true,
-      component: () => import('@/AppDocuments')
+      component: () => import('@/AppDocuments'),
+      meta: { pagePermission: 'get_documents' }
     }
-  ],
-
-  admin: [
-    ...admin,
-    ...teamlead,
-    ...manager
-  ],
-
-  teamlead: [
-    ...teamlead,
-    ...manager
-  ],
-
-  manager: [
-    ...teamlead,
-    ...manager
   ]
+
 }
 
-export const userRoutes = [...routes[user.role]]
+export const userRoutes = routes.user
 
 export default new Router({
   mode: 'history',
   routes: [
-    ...userRoutes,
+    ...routes.user,
     ...routes.nested,
     ...routes.redirect
   ]
 })
 
 
+
+
 // router.beforeEach(initCurrentUserStateMiddleware)
 // router.beforeEach(checkAccessMiddleware)
 // router.beforeEach(setPageTitleMiddleware)
+
+
+// import Vue from 'vue'
+// import Store from '~/store'
+// import Router from 'vue-router'
+
+// const { user } = Store.state.base
+
+// const admin = [
+//   {
+//     path: '/users',
+//     name: 'Users',
+//     icon: 'mdi-account-circle',
+//     component: () => import('@/AppUsers'),
+//     meta: { adminOnly: true }
+//   }
+// ]
+
+// const teamlead = [
+//   {
+//     path: '/projects',
+//     name: 'Projects',
+//     icon: 'mdi-webpack',
+//     component: () => import('@/AppProjects')
+//   }
+// ]
+
+// const manager = [
+//   {
+//     path: '/clients',
+//     name: 'Clients',
+//     icon: 'mdi-account-multiple',
+//     component: () => import('@/AppClients')
+//   }
+// ]
+
+// Vue.use(Router)
+
+// export const routes = {
+
+//   redirect: [
+//     {
+//       path: '/',
+//       redirect: 'login'
+//     },
+//     {
+//       path: '/login',
+//       name: 'Login',
+//       component: () => import('@/Login')
+//     },
+//     {
+//       path: '*',
+//       redirect: '/projects'
+//     }
+//   ],
+
+//   nested: [ 
+//     {
+//       path: '/projects/:id',
+//       name: 'Documents',
+//       icon: 'mdi-webpack',
+//       props: true,
+//       component: () => import('@/AppDocuments')
+//     }
+//   ],
+
+//   admin: [
+//     ...admin,
+//     ...teamlead,
+//     ...manager
+//   ],
+
+//   teamlead: [
+//     ...teamlead,
+//     ...manager
+//   ],
+
+//   manager: [
+//     ...teamlead,
+//     ...manager
+//   ]
+// }
+
+// export const userRoutes = [...routes[user.role]]
+
+// export default new Router({
+//   mode: 'history',
+//   routes: [
+//     ...userRoutes,
+//     ...routes.nested,
+//     ...routes.redirect
+//   ]
+// })

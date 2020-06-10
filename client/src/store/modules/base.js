@@ -6,9 +6,9 @@ export default {
   namespaced: true,
 
   state: {
-    // user: 'manager',
-    // user: 'teamlead',
     user: {role: 'admin'},
+    // user: 'teamlead',
+    // user: 'manager',
     loading: true,
     isError: false,
     confirmationDialog: false,
@@ -21,16 +21,21 @@ export default {
       success: 'success',
       error: 'server error'
     }, 
-    snackbarTimeout: 2000,
-    message: ''
+    snackbarTimeout: 3000,
+    message: '',
+    permissions: []
   },
 
   getters: {
     user: ({ user }) => user,
-    admin: ({ user }) => user.role === 'admin',
-    teamlead: ({ user }) => user.role === 'teamlead',
-    manager: ({ user }) => user.role === 'manager',
+    admin: ({ user }) => user === 'admin',
+    teamlead: ({ user }) => user === 'teamlead',
+    manager: ({ user }) => user === 'manager',
     loading: ({ loading }) => loading,
+    isPermissions: ({ permissions }) => !!permissions.length,
+    hasPermission: ({ permissions }) => (action) => {
+      return permissions.some(el => el === action)
+    },
     isError(state) {
       return state.isError
     },
@@ -55,6 +60,11 @@ export default {
   mutations: {
     setUser(state, payload) {
       state.user = payload
+    },
+
+    setPermissions(state, payload) {
+      // state.permissions = payload
+      state.permissions = ['get_users', 'get_documents','approve_documents', 'create_comments','get_projects','update_projects']
     },
 
     changeLoading(state, payload) {
@@ -98,6 +108,10 @@ export default {
   actions: {
     setUser({ commit }, payload) {
       commit('setUser', payload)
+    },
+
+    setPermissions({ commit }, payload) {
+      commit('setPermissions', payload)
     },
     
     changeLoading({ commit }, payload) {

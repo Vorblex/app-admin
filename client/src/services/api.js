@@ -17,11 +17,10 @@ export default () => {
   }
 
   api.interceptors.request.use(request => {
-    console.log('IsA Exp', authHelpers.isAccessTokenExpired(), 'flag', flag);
+    // console.log('IsA Exp', authHelpers.isAccessTokenExpired(), 'flag', flag);
     if(flag) return request
     if (authHelpers.isAccessTokenExpired() && authHelpers.getRefreshToken()) {
       flag = true
-      // console.log('IsB Exp', authHelpers.isAccessTokenExpired());
       return authService.refreshTokens()
         .then(response => {
           console.log('REFRESH RESPONSE' ,response);

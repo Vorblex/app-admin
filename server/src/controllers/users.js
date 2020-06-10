@@ -18,6 +18,10 @@ exports.get_users = (req, res) => {
     })
 };
 
+exports.get_user_permissions = (req, res) => {
+  res.send({message: 'ok'})
+}
+
 exports.create_user = async (req, res) => {
 
   const password = bCrypt.hashSync("q");

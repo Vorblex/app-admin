@@ -23,7 +23,7 @@
         v-btn.mr-2(@click.stop='$router.push({ name: `Documents`, params: {id: item.id, projectName: item.name}})') Show documents
         v-btn.mr-2(@click.stop='getInfo(item)' icon)
           v-icon(md color='cyan') info
-        template(v-if='!manager')
+        template(v-if='hasPermissionUpdateProject')
           v-btn.mr-2(@click.stop='startEdit(item)' icon)
             v-icon(md color='primary') edit
           v-btn(@click='runProcess(`remove`, item)' icon)
@@ -166,10 +166,11 @@ export default {
   computed: {
     ...mapGetters('base', {
       confirmationAgree: 'confirmationAgree',
-      admin: 'admin',
-      teamlead: 'teamlead',
-      manager: 'manager'
-    })
+      hasPermission: 'hasPermission'
+    }),
+    hasPermissionUpdateProject() {
+      return this.hasPermission('update_projects')
+    }
   },
   watch: {
     confirmationAgree(v) {

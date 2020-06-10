@@ -18,5 +18,14 @@ export default {
   },
   getUserProjects(id) {
     return api().get(`projects/all?userId=${id}`)
-  }
+  },
+  getPermissions() {
+    return api().get('users/permissions')
+  },
+  getAllPermissions() {
+    // return api().get('user/permissions')
+  },
+  getUserPermissions() {
+    // return api().get('user/permissions')
+  },
 }
